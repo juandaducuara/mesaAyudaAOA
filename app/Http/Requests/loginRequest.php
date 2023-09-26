@@ -34,11 +34,16 @@ class loginRequest extends FormRequest
     public function getCredentials(){
         $usuario = $this->get('usuario');
         if ($this->isEmail($usuario)) {
-            # code...
+            return [
+                'email'=> $usuario,
+                'clave'=> $this->get('clave')
+            ];
         }
+        return $this->only('usuario','clave');
     }
 
-    public function isMail($value){
-
+    public function isEmail($value){
+        $factory = $this->container->make(ValidationFactory::class);
+        return !$factory->make(['usuario'=> $value],['usuario'=>'email'])->fails();
     }
 }
